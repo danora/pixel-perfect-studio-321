@@ -21,7 +21,7 @@ export const Route = createFileRoute("/partner/$id")({
 function Profile() {
   const { partner: p } = Route.useLoaderData();
   const [msg, setMsg] = useState("");
-  const outreach = () => setMsg(`Dear ${p.name} team,\n\nWe've been following your work in ${p.city} — particularly your ${p.categories[0].toLowerCase()} projects. KRAABMOD develops premium interior wall and lighting systems that integrate seamlessly into architecture like yours.\n\nWould you be open to a short conversation about upcoming projects?\n\nWarm regards,\nKRAABMOD`);
+  const outreach = () => setMsg(`Dear ${p.name} team,\n\nWe've been following your work in ${p.city} — particularly your ${(p.categories[0] ?? "recent").toLowerCase()} projects. KRAABMOD develops premium interior wall and lighting systems that integrate seamlessly into architecture like yours.\n\nWould you be open to a short conversation about upcoming projects?\n\nWarm regards,\nKRAABMOD`);
   const row = (k: string, v: React.ReactNode) => (
     <div className="flex justify-between gap-4 border-b border-border py-3 text-sm"><span className="eyebrow">{k}</span><span className="text-right">{v}</span></div>
   );
