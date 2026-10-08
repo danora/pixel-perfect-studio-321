@@ -49,7 +49,7 @@ const EXTRAS: Record<string, Pick<Partner, "linkedin" | "contactPerson" | "examp
   "baltic-build": { linkedin: "linkedin.com/company/baltic-build-group", contactPerson: { name: "Mart Tamm", role: "Project Director" }, exampleProjects: [{ name: "Noblessner Lofts", location: "Tallinn", year: "2025", type: "Luxury Residential" }, { name: "Rotermann Offices", location: "Tallinn", year: "2024", type: "Commercial" }] },
 };
 
-export const PARTNERS: Partner[] = BASE.map((b) => ({ ...b, ...EXTRAS[b.id] }));
+export const PARTNERS: Partner[] = BASE.map((b) => ({ ...b, ...EXTRAS[b.id]! }));
 
 export function outreachMessage(p: Partner): string {
   const first = p.contactPerson.name.split(" ")[0];
