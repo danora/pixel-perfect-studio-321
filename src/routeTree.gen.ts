@@ -10,33 +10,63 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as PartnersRouteImport } from './routes/partners'
+import { Route as ProjectsRouteImport } from './routes/projects'
+import { Route as PartnerIdRouteImport } from './routes/partner.$id'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const PartnersRoute = PartnersRouteImport.update({
+  id: '/partners',
+  path: '/partners',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProjectsRoute = ProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PartnerIdRoute = PartnerIdRouteImport.update({
+  id: '/partner/$id',
+  path: '/partner/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/partners': typeof PartnersRoute
+  '/projects': typeof ProjectsRoute
+  '/partner/$id': typeof PartnerIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/partners': typeof PartnersRoute
+  '/projects': typeof ProjectsRoute
+  '/partner/$id': typeof PartnerIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/partners': typeof PartnersRoute
+  '/projects': typeof ProjectsRoute
+  '/partner/$id': typeof PartnerIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/partners' | '/projects' | '/partner/$id'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/partners' | '/projects' | '/partner/$id'
+  id: '__root__' | '/' | '/partners' | '/projects' | '/partner/$id'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  PartnersRoute: typeof PartnersRoute
+  ProjectsRoute: typeof ProjectsRoute
+  PartnerIdRoute: typeof PartnerIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -48,11 +78,35 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/partners': {
+      id: '/partners'
+      path: '/partners'
+      fullPath: '/partners'
+      preLoaderRoute: typeof PartnersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/projects': {
+      id: '/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof ProjectsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/partner/$id': {
+      id: '/partner/$id'
+      path: '/partner/$id'
+      fullPath: '/partner/$id'
+      preLoaderRoute: typeof PartnerIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  PartnersRoute: PartnersRoute,
+  ProjectsRoute: ProjectsRoute,
+  PartnerIdRoute: PartnerIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
