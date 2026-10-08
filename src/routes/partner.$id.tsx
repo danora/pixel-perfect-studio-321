@@ -1,6 +1,8 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
 import { getPartner } from "@/lib/data";
+import { usePartners } from "@/lib/store";
+import { OutreachDialog } from "@/components/OutreachDialog";
 import { AddButton, Btn, DemoNote, FitScore, Tag } from "@/components/ui-kit";
 
 export const Route = createFileRoute("/partner/$id")({
@@ -20,14 +22,16 @@ export const Route = createFileRoute("/partner/$id")({
 
 function Profile() {
   const { partner: p } = Route.useLoaderData();
-  const [msg, setMsg] = useState("");
-  const outreach = () => setMsg(`Dear ${p.name} team,\n\nWe've been following your work in ${p.city} — particularly your ${(p.categories[0] ?? "recent").toLowerCase()} projects. KRAABMOD develops premium interior wall and lighting systems that integrate seamlessly into architecture like yours.\n\nWould you be open to a short conversation about upcoming projects?\n\nWarm regards,\nKRAABMOD`);
+  const [outreachOpen, setOutreachOpen] = useState(false);
+  const { saved } = usePartners();
+  const status = saved[p.id] ?? "Not in partners";
+  const ext = (href: string, label: string) => <a className="underline" href={`https://${href}`} target="_blank" rel="noreferrer">{label}</a>;
   const row = (k: string, v: React.ReactNode) => (
     <div className="flex justify-between gap-4 border-b border-border py-3 text-sm"><span className="eyebrow">{k}</span><span className="text-right">{v}</span></div>
   );
   return (
     <div className="mx-auto max-w-7xl px-6 py-12">
-      <Link to="/" className="eyebrow hover:text-foreground">← Back to discover</Link>
+      <Link to="/" className="eyebrow hover:text-foreground">← Back to Discover</Link>
       <img src={p.image} alt={p.name} width={1024} height={768} className="mt-6 aspect-[21/8] w-full object-cover" />
       <div className="mt-10 flex flex-wrap items-end justify-between gap-6 border-b border-border pb-8">
         <div>
@@ -41,7 +45,7 @@ function Profile() {
         <div className="space-y-10">
           <p className="font-display text-2xl leading-snug">{p.description}</p>
           <section>
-            <h2 className="eyebrow mb-4">Why KRAABMOD?</h2>
+            <h2 className="eyebrow mb-4">Why this partner fits KRAABMOD</h2>
             <ul className="grid gap-3 sm:grid-cols-2">{p.reasons.map((r, i) => (
               <li key={r} className="border border-border p-5"><span className="font-display text-3xl text-accent">0{i + 1}</span><div className="mt-2 text-sm">{r}</div></li>
             ))}</ul>
@@ -51,30 +55,38 @@ function Profile() {
             <div className="flex flex-wrap gap-2">{p.categories.map((c) => <Tag key={c}>{c}</Tag>)}</div>
           </section>
           <section>
+            <h2 className="eyebrow mb-4">Example projects</h2>
+            <div className="divide-y divide-border border-y border-border">{p.exampleProjects.map((x) => (
+              <div key={x.name} className="flex flex-wrap items-baseline justify-between gap-2 py-4">
+                <span className="font-display text-2xl">{x.name}</span>
+                <span className="text-sm text-muted-foreground">{x.location} · {x.type} · {x.year}</span>
+              </div>
+            ))}</div>
+          </section>
+          <section>
             <h2 className="eyebrow mb-4">Notes</h2>
             <textarea defaultValue={p.notes} placeholder="Add internal notes…" rows={4} className="w-full border border-border bg-card p-4 text-sm outline-none focus:border-foreground" />
           </section>
-          {msg && (
-            <section>
-              <h2 className="eyebrow mb-4">Outreach draft</h2>
-              <textarea value={msg} onChange={(e) => setMsg(e.target.value)} rows={10} className="w-full border border-border bg-card p-4 text-sm outline-none" />
-            </section>
-          )}
         </div>
         <aside className="h-fit border border-border bg-card p-6">
           <div className="mb-4 flex items-center justify-between"><h2 className="font-display text-2xl">Contact</h2><DemoNote /></div>
-          {row("Website", <a className="underline" href={`https://${p.website}`} target="_blank" rel="noreferrer">{p.website}</a>)}
-          {row("Instagram", <a className="underline" href={`https://instagram.com/${p.instagram.slice(1)}`} target="_blank" rel="noreferrer">{p.instagram}</a>)}
+          {row("Contact person", <span>{p.contactPerson.name}<br /><span className="text-muted-foreground">{p.contactPerson.role}</span></span>)}
+          {row("Contact status", <span className="border border-border px-2 py-1 text-[0.68rem] uppercase tracking-wider">{status}</span>)}
+          {row("Website", ext(p.website, p.website))}
+          {row("Instagram", ext(`instagram.com/${p.instagram.slice(1)}`, p.instagram))}
+          {row("LinkedIn", ext(p.linkedin, "Company page"))}
           {row("Email", p.email)}
           {row("Phone", p.phone)}
           {row("Type", p.type)}
-          {row("Typical budget", p.budget)}
+          {row("Est. project budget", p.budget)}
           <div className="mt-6 grid gap-3">
             <AddButton id={p.id} />
-            <Btn variant="outline" onClick={outreach}>Generate outreach message</Btn>
+            <Btn variant="outline" onClick={() => setOutreachOpen(true)}>Generate outreach message</Btn>
+            {saved[p.id] && <Link to="/partners" className="eyebrow text-center hover:text-foreground">View in Partners →</Link>}
           </div>
         </aside>
       </div>
+      <OutreachDialog partner={p} open={outreachOpen} onOpenChange={setOutreachOpen} />
     </div>
   );
 }
