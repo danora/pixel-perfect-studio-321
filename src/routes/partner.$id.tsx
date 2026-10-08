@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useState } from "react";
-import { getPartner } from "@/lib/data";
+import { getPartner, STATUSES, type Status } from "@/lib/data";
 import { usePartners } from "@/lib/store";
 import { OutreachDialog } from "@/components/OutreachDialog";
 import { AddButton, Btn, DemoNote, FitScore, Tag } from "@/components/ui-kit";
@@ -23,7 +23,7 @@ export const Route = createFileRoute("/partner/$id")({
 function Profile() {
   const { partner: p } = Route.useLoaderData();
   const [outreachOpen, setOutreachOpen] = useState(false);
-  const { saved } = usePartners();
+  const { saved, setStatus } = usePartners();
   const status = saved[p.id] ?? "Not in partners";
   const ext = (href: string, label: string) => <a className="underline" href={`https://${href}`} target="_blank" rel="noreferrer">{label}</a>;
   const row = (k: string, v: React.ReactNode) => (
@@ -72,6 +72,16 @@ function Profile() {
           <div className="mb-4 flex items-center justify-between"><h2 className="font-display text-2xl">Contact</h2><DemoNote /></div>
           {row("Contact person", <span>{p.contactPerson.name}<br /><span className="text-muted-foreground">{p.contactPerson.role}</span></span>)}
           {row("Contact status", <span className="border border-border px-2 py-1 text-[0.68rem] uppercase tracking-wider">{status}</span>)}
+          {row("Status", (
+            <select
+              value={saved[p.id] ?? "New"}
+              onChange={(e) => setStatus(p.id, e.target.value as Status)}
+              aria-label="Partner status"
+              className="field cursor-pointer"
+            >
+              {STATUSES.map((s) => <option key={s}>{s}</option>)}
+            </select>
+          ))}
           {row("Website", ext(p.website, p.website))}
           {row("Instagram", ext(`instagram.com/${p.instagram.slice(1)}`, p.instagram))}
           {row("LinkedIn", ext(p.linkedin, "Company page"))}
