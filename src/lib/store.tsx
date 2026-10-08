@@ -1,8 +1,12 @@
+import type React from "react";
 import { createContext, useContext, useEffect, useState, type ReactNode } from "react";
 import type { Status } from "./data";
 
 type Saved = Record<string, Status>;
-const Ctx = createContext<{ saved: Saved; add: (id: string) => void; setStatus: (id: string, s: Status) => void; remove: (id: string) => void } | null>(null);
+type Value = { saved: Saved; add: (id: string) => void; setStatus: (id: string, s: Status) => void; remove: (id: string) => void };
+// Keep one context instance across hot reloads so provider and consumers always match.
+const g = globalThis as unknown as { __kraabCtx?: React.Context<Value | null> };
+const Ctx = (g.__kraabCtx ??= createContext<Value | null>(null));
 
 const KEY = "kraabmod-saved";
 
