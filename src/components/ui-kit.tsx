@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import type { ButtonHTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 import type { Partner } from "@/lib/data";
@@ -79,8 +79,12 @@ export function AddButton({ id, className }: { id: string; className?: string })
 }
 
 export function PartnerCard({ p }: { p: Partner }) {
+  const navigate = useNavigate();
   return (
-    <article className="flex flex-col border border-border bg-card">
+    <article
+      onClick={(e) => { if (!(e.target as HTMLElement).closest("a,button")) navigate({ to: "/partner/$id", params: { id: p.id } }); }}
+      className="flex cursor-pointer flex-col border border-border bg-card transition-colors hover:border-foreground/40"
+    >
       <img src={p.image} alt={p.name} loading="lazy" width={1024} height={768} className="aspect-[16/9] w-full object-cover" />
       <div className="flex flex-1 flex-col p-6">
         <div className="flex items-start justify-between gap-4">
