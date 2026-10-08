@@ -2,6 +2,7 @@ import p1 from "@/assets/p1.jpg";
 import p2 from "@/assets/p2.jpg";
 import p3 from "@/assets/p3.jpg";
 
+export const COUNTRIES = ["Italy", "France", "Spain", "Switzerland", "Germany", "Estonia", "UK", "Monaco", "Norway"];
 export const PARTNER_TYPES = ["Interior Designer", "Architect", "Developer", "Contractor", "Design Studio"];
 export const PROJECT_TYPES = ["Luxury Residential", "Villa", "Penthouse", "Hotel", "Restaurant", "Commercial", "Yacht"];
 export const BUDGETS = ["€250k – €1M", "€1M – €5M", "€5M – €20M", "€20M+"];
